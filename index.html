@@ -1,58 +1,193 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tetris Clone</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <main class="app">
-      <section class="board-panel">
-        <canvas id="board" width="300" height="600" aria-label="Tetris board"></canvas>
-      </section>
 
-      <aside class="side-panel">
-        <h1>Tetris</h1>
-        <div class="card">
-          <p class="label">Score</p>
-          <p id="score" class="value">0</p>
-        </div>
-        <div class="card">
-          <p class="label">Lines</p>
-          <p id="lines" class="value">0</p>
-        </div>
-        <div class="card">
-          <p class="label">Level</p>
-          <p id="level" class="value">1</p>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>テトリス - Puzzle Game</title>
+  <meta name="description" content="ブラウザで遊べるテトリス風パズルゲーム。キーボード操作でブロックを積み上げよう！">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600&display=swap"
+    rel="stylesheet">
+</head>
 
-        <div class="card">
-          <p class="label">Next</p>
-          <canvas id="next" width="120" height="120"></canvas>
+<body>
+  <!-- ===== Mode Select Screen ===== -->
+  <div id="mode-select-screen" class="screen">
+    <h1 class="game-title title-large">TETRIS</h1>
+    <div class="mode-buttons">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button id="btn-endless" class="mode-btn">
+          <span class="mode-icon">∞</span>
+          <span class="mode-label">エンドレス</span>
+          <span class="mode-desc">クラシックモード</span>
+        </button>
+        <div style="text-align: center; font-family: 'Orbitron', sans-serif;">
+          <label for="start-level" style="color: #ccc; font-size: 0.9em; margin-right: 5px;">START LEVEL:</label>
+          <input type="number" id="start-level" min="1" max="30" value="1"
+            style="width: 60px; padding: 4px; border: 1px solid #00e5ff; background: #111; color: #00e5ff; border-radius: 4px; font-family: 'Orbitron', sans-serif; text-align: center; font-size: 1.1em;">
         </div>
+      </div>
+      <button id="btn-challenge-select" class="mode-btn">
+        <span class="mode-icon">★</span>
+        <span class="mode-label">チャレンジ</span>
+        <span class="mode-desc">ステージクリア型</span>
+      </button>
+    </div>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+      <button id="btn-keyconfig" class="sub-btn">⚙ KEY CONFIG</button>
+      <button id="btn-debug" class="sub-btn">🔧 DEBUG</button>
+    </div>
+  </div>
 
-        <div class="card">
-          <p class="label">操作</p>
-          <ul>
-            <li>← / → : 移動</li>
-            <li>↑ : 回転</li>
-            <li>↓ : ソフトドロップ</li>
-            <li>Space : ハードドロップ</li>
-            <li>P : 一時停止</li>
-            <li>R : リスタート</li>
-          </ul>
-        </div>
-      </aside>
-    </main>
+  <!-- ===== Challenge Select Screen ===== -->
+  <div id="challenge-select-screen" class="screen hidden">
+    <h1 class="game-title">CHALLENGE</h1>
+    <p class="challenge-subtitle">難易度を選択</p>
+    <div class="challenge-grid" id="challenge-grid">
+      <!-- JS で生成 -->
+    </div>
+    <button id="btn-back-menu" class="back-btn">← MENU</button>
+  </div>
 
-    <div id="overlay" class="overlay hidden" role="status" aria-live="polite">
-      <div class="overlay-card">
-        <h2 id="overlay-title">Game Over</h2>
-        <p id="overlay-sub">R を押してリスタート</p>
+  <!-- ===== Key Config Screen ===== -->
+  <div id="keyconfig-screen" class="screen hidden">
+    <h1 class="game-title">KEY CONFIG</h1>
+    <div id="keyconfig-list" class="keyconfig-list"></div>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+      <button id="keyconfig-reset" class="sub-btn">↺ RESET</button>
+      <button id="btn-keyconfig-back" class="back-btn">← MENU</button>
+    </div>
+  </div>
+
+  <!-- ===== Debug Screen ===== -->
+  <div id="debug-screen" class="screen hidden">
+    <h1 class="game-title">DEBUG</h1>
+    <div class="debug-panel">
+      <h3>Challenge 直接開始</h3>
+      <div style="display: flex; gap: 8px; align-items: center; margin: 8px 0;">
+        <label style="color:#ccc;">CH:</label>
+        <input type="number" id="debug-challenge" min="1" max="10" value="1"
+          style="width:50px; padding:4px; background:#111; color:#00e5ff; border:1px solid #00e5ff; border-radius:4px; text-align:center;">
+        <label style="color:#ccc;">STAGE:</label>
+        <input type="number" id="debug-stage" min="1" max="5" value="1"
+          style="width:50px; padding:4px; background:#111; color:#00e5ff; border:1px solid #00e5ff; border-radius:4px; text-align:center;">
+        <button id="btn-debug-start" class="sub-btn">START</button>
+      </div>
+      <h3 style="margin-top:15px;">ご褒美プレビュー</h3>
+      <div style="display: flex; gap: 8px; align-items: center; margin: 8px 0;">
+        <label style="color:#ccc;">CH:</label>
+        <input type="number" id="debug-reward-ch" min="1" max="10" value="1"
+          style="width:50px; padding:4px; background:#111; color:#00e5ff; border:1px solid #00e5ff; border-radius:4px; text-align:center;">
+        <button id="btn-debug-reward" class="sub-btn">PLAY</button>
       </div>
     </div>
+    <button id="btn-debug-back" class="back-btn">← MENU</button>
+  </div>
 
-    <script src="script.js"></script>
-  </body>
+  <!-- ===== Reward Screen ===== -->
+  <div id="reward-screen" class="screen hidden">
+    <canvas id="reward-canvas" width="600" height="600"></canvas>
+    <div id="reward-text-overlay" class="reward-text-overlay">
+      <h2 id="reward-title"></h2>
+      <p id="reward-sub"></p>
+    </div>
+    <button id="btn-reward-skip" class="reward-skip-btn">SKIP →</button>
+  </div>
+
+  <!-- ===== Game Screen ===== -->
+  <div id="game-screen" class="screen hidden">
+    <div class="game-wrapper">
+      <h1 class="game-title">TETRIS</h1>
+      <div class="game-container">
+        <!-- Left Panel: Hold -->
+        <div class="side-panel side-panel-left">
+          <div class="panel-box hold-box">
+            <h3>HOLD</h3>
+            <canvas id="hold-canvas" width="120" height="120"></canvas>
+          </div>
+        </div>
+
+        <!-- Board -->
+        <div class="board-area">
+          <canvas id="board" width="300" height="600"></canvas>
+
+          <!-- Game Over / Clear Overlay -->
+          <div id="game-over-overlay" class="overlay hidden">
+            <div class="overlay-content">
+              <h2 id="result-title">GAME OVER</h2>
+              <p id="final-score-text">Score: 0</p>
+              <button id="retry-btn">RETRY</button>
+              <button id="menu-btn" class="menu-btn">MENU</button>
+            </div>
+          </div>
+
+          <!-- Pause Overlay -->
+          <div id="pause-overlay" class="overlay hidden">
+            <div class="overlay-content">
+              <h2>PAUSED</h2>
+              <p class="pause-hint">Press ESC to resume</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="side-panel side-panel-right">
+          <div id="challenge-info" class="panel-box challenge-box hidden">
+            <h3 id="challenge-mode-label">CHALLENGE 1</h3>
+            <h3 class="mt8">STAGE</h3>
+            <p id="stage-display">1</p>
+            <h3 class="mt8">TARGET</h3>
+            <p id="target-display">0 / 0</p>
+          </div>
+
+          <div class="panel-box next-box">
+            <h3>NEXT</h3>
+            <canvas id="next-canvas" width="120" height="120"></canvas>
+          </div>
+          <div class="panel-box score-box">
+            <h3>SCORE</h3>
+            <p id="score-display">0</p>
+          </div>
+          <div class="panel-box level-box">
+            <h3>LEVEL</h3>
+            <p id="level-display">1</p>
+          </div>
+          <div class="panel-box lines-box">
+            <h3>LINES</h3>
+            <p id="lines-display">0</p>
+          </div>
+          <div class="panel-box audio-box">
+            <h3>BGM</h3>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 5px;">
+              <label
+                style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.9em; user-select: none;">
+                <input type="checkbox" id="bgm-toggle" checked> ON
+              </label>
+              <input type="range" id="bgm-volume" min="0" max="1" step="0.1" value="0.5"
+                style="flex: 1; cursor: pointer;">
+            </div>
+          </div>
+          <div class="panel-box controls-box">
+            <h3>CONTROLS</h3>
+            <ul id="controls-list">
+              <li>← → 移動</li>
+              <li>↑ 右回転</li>
+              <li>Z 左回転</li>
+              <li>↓ ソフトドロップ</li>
+              <li>Space ハードドロップ</li>
+              <li>C ホールド</li>
+              <li>Esc ポーズ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+
 </html>

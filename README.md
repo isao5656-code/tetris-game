@@ -1,16 +1,14 @@
-# Tetris Game
+# Tetris Game (antigravity source clone)
 
-シンプルなブラウザ版テトリスです。
+`tetris_source_code.md` に含まれていた `index.html` / `style.css` / `game.js` をそのまま展開して、ブラウザで動作する構成にしています。
 
-## 起動方法
+## Run locally
 
-`index.html` をブラウザで開くだけで遊べます。
+```bash
+python -m http.server 8000
+# then open http://localhost:8000/
+```
 
-## 操作
+## GitHub Pages
 
-- ← / →: 左右移動
-- ↑: 回転
-- ↓: ソフトドロップ
-- Space: ハードドロップ
-- P: 一時停止
-- R: リスタート
+- main ブランチ push 時に GitHub Actions で Pages をデプロイする設定を追加しています。
