@@ -1,0 +1,563 @@
+/* ============================================
+   テトリス - スタイルシート (v4)
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0a0a0f;
+  color: #e0e0e0;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(120, 40, 200, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 180, 255, 0.06) 0%, transparent 50%);
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen.hidden {
+  display: none;
+}
+
+/* --- Title --- */
+.game-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 2.4rem;
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 12px;
+  background: linear-gradient(135deg, #00e5ff, #d500f9, #ff1744);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.3));
+}
+
+.title-large {
+  font-size: 3.6rem;
+  margin-bottom: 48px;
+  letter-spacing: 18px;
+}
+
+/* --- Mode Select --- */
+.mode-buttons {
+  display: flex;
+  gap: 24px;
+}
+
+.mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  color: #e0e0e0;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.mode-btn:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 229, 255, 0.4);
+  box-shadow: 0 8px 30px rgba(0, 229, 255, 0.15);
+}
+
+.mode-btn:active {
+  transform: translateY(-1px);
+}
+
+.mode-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.mode-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.mode-desc {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Challenge Select --- */
+.challenge-subtitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 4px;
+  margin-bottom: 32px;
+}
+
+.challenge-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 600px;
+}
+
+.challenge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  color: #e0e0e0;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  min-width: 100px;
+}
+
+.challenge-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 234, 0, 0.5);
+  box-shadow: 0 6px 25px rgba(255, 234, 0, 0.1);
+}
+
+.challenge-card .card-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffea00, #ff9100);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.challenge-card .card-label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 2px;
+}
+
+.back-btn {
+  margin-top: 28px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 10px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.back-btn:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Reward Screen --- */
+#reward-screen {
+  position: relative;
+}
+
+#reward-canvas {
+  display: block;
+  border-radius: 12px;
+  background: #0a0a0f;
+}
+
+.reward-text-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.reward-text-overlay h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #ffea00, #ff9100, #ff1744);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(255, 234, 0, 0.5));
+}
+
+.reward-text-overlay p {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 3px;
+}
+
+.reward-skip-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 8px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  z-index: 3;
+  transition: color 0.2s;
+}
+
+.reward-skip-btn:hover {
+  color: #fff;
+}
+
+/* --- Layout --- */
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* --- Board --- */
+.board-area {
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.1), 0 0 60px rgba(213, 0, 249, 0.05), inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+#board {
+  display: block;
+  background: #111118;
+}
+
+/* --- Overlay --- */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay-content {
+  text-align: center;
+}
+
+.overlay-content h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #ff1744;
+  margin-bottom: 12px;
+  text-shadow: 0 0 20px rgba(255, 23, 68, 0.6);
+}
+
+.overlay-content h2.clear-title {
+  color: #76ff03;
+  text-shadow: 0 0 20px rgba(118, 255, 3, 0.6);
+}
+
+.overlay-content p {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  color: #aaa;
+  margin-bottom: 28px;
+}
+
+#retry-btn,
+.menu-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  padding: 14px 40px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #6200ea, #00bcd4);
+  box-shadow: 0 0 20px rgba(98, 0, 234, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-block;
+}
+
+.menu-btn {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+  margin-left: 12px;
+  font-size: 0.8rem;
+  padding: 14px 24px;
+}
+
+#retry-btn:hover,
+.menu-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(98, 0, 234, 0.6);
+}
+
+#retry-btn:active,
+.menu-btn:active {
+  transform: scale(0.97);
+}
+
+/* --- Side Panels --- */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 160px;
+}
+
+.side-panel-left {
+  align-items: flex-end;
+}
+
+.panel-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 16px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.panel-box h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.mt8 {
+  margin-top: 12px;
+}
+
+.hold-box,
+.next-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#hold-canvas,
+#next-canvas {
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+.hold-box.locked h3 {
+  color: rgba(255, 255, 255, 0.15);
+}
+
+.score-box p,
+.lines-box p {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #00e5ff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+
+.level-box p {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #d500f9;
+  text-shadow: 0 0 10px rgba(213, 0, 249, 0.4);
+}
+
+.challenge-box p {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #ffea00;
+  text-shadow: 0 0 10px rgba(255, 234, 0, 0.4);
+}
+
+.challenge-box.hidden {
+  display: none;
+}
+
+.controls-box ul {
+  list-style: none;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+}
+
+#pause-overlay h2 {
+  color: #00e5ff;
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+}
+
+.pause-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+}
+
+/* --- Sub Buttons (KEY CONFIG / DEBUG) --- */
+.sub-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #aaa;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.sub-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: #00e5ff;
+}
+
+/* --- Key Config --- */
+.keyconfig-list {
+  width: 340px;
+  max-width: 90vw;
+}
+
+.keyconfig-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.kc-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  color: #ccc;
+  letter-spacing: 1px;
+}
+
+.kc-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  padding: 6px 18px;
+  min-width: 80px;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid #00e5ff;
+  color: #00e5ff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.kc-btn:hover {
+  background: rgba(0, 229, 255, 0.25);
+}
+
+.kc-btn.waiting {
+  background: rgba(255, 200, 0, 0.2);
+  border-color: #ffc400;
+  color: #ffc400;
+  animation: pulse-waiting 0.8s infinite alternate;
+}
+
+@keyframes pulse-waiting {
+  from {
+    opacity: 0.6;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Debug Panel --- */
+.debug-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px 25px;
+  margin-bottom: 15px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.debug-panel h3 {
+  font-size: 0.85rem;
+  color: #00e5ff;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+/* --- Challenge Grid (10 cards) --- */
+.challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 550px;
+  margin: 0 auto 20px;
+}
+
+.challenge-card {
+  padding: 12px 8px;
+  min-width: 90px;
+}
+
+.card-label {
+  font-size: 0.6rem;
+}
